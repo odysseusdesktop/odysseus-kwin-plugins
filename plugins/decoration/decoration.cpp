@@ -51,7 +51,7 @@ static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
 
 Decoration::Decoration(QObject *parent, const QVariantList &args)
     : KDecoration2::Decoration(parent, args),
-      m_settings(new QSettings(QSettings::UserScope, "panda", "theme")),
+      m_settings(new QSettings(QSettings::UserScope, "cyberos", "theme")),
       m_settingsFile(m_settings->fileName()),
       m_fileWatcher(new QFileSystemWatcher)
 {
@@ -330,7 +330,7 @@ int Decoration::titleBarHeight() const
 
 bool Decoration::darkMode() const
 {
-    QSettings settings(QSettings::UserScope, "panda", "theme");
+    QSettings settings(QSettings::UserScope, "cyberos", "theme");
     return settings.value("DarkMode", false).toBool();
 }
 
