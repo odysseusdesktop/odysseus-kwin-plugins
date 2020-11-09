@@ -66,19 +66,21 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
     if (!decoration)
         return;
 
+    auto c = decoration->client().toStrongRef().data();
+    const bool isDarkMode = decoration->darkMode();
     const QRect &rect = geometry().toRect();
     painter->save();
 
-    auto c = decoration->client().toStrongRef().data();
+    painter->setRenderHints(QPainter::Antialiasing);
 
-    QIcon::Mode state = QIcon::Normal;
+    QRect btnRect(0, 0, 30, 30);
+    btnRect.moveCenter(rect.center());
 
-    if (!isEnabled()) {
-        state = QIcon::Disabled;
-    } else if (isPressed()) {
-        state = QIcon::Selected;
-    } else if (isHovered()) {
-        state = QIcon::Active;
+    if (isHovered() || isPressed()) {
+        painter->setPen(Qt::NoPen);
+        painter->setBrush(isDarkMode ? isPressed() ? QColor(255, 255, 255, 255 * 0.1) : QColor(255, 255, 255, 255 * 0.15)
+                                     : isPressed() ? QColor(0, 0, 0, 255 * 0.15) : QColor(0, 0, 0, 255 * 0.1));
+        painter->drawRoundedRect(btnRect, btnRect.height() / 2, btnRect.height() / 2);
     }
 
     switch (type()) {
@@ -87,22 +89,21 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
         break;
     }
     case KDecoration2::DecorationButtonType::ApplicationMenu: {
-        //decoration->menuIcon().paint(painter, rect, Qt::AlignCenter, state);
         break;
     }
     case KDecoration2::DecorationButtonType::Minimize: {
-        decoration->minimizeIcon().paint(painter, rect, Qt::AlignCenter, state);
+        painter->drawPixmap(btnRect, decoration->minimizeBtnPixmap());
         break;
     }
     case KDecoration2::DecorationButtonType::Maximize: {
         if (isChecked())
-            decoration->restoreIcon().paint(painter, rect, Qt::AlignCenter, state);
+            painter->drawPixmap(btnRect, decoration->restoreBtnPixmap());
         else
-            decoration->maximizeIcon().paint(painter, rect, Qt::AlignCenter, state);
+            painter->drawPixmap(btnRect, decoration->maximizeBtnPixmap());
         break;
     }
     case KDecoration2::DecorationButtonType::Close: {
-        decoration->closeIcon().paint(painter, rect, Qt::AlignCenter, state);
+        painter->drawPixmap(btnRect, decoration->closeBtnPixmap());
         break;
     }
     default:

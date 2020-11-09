@@ -45,10 +45,12 @@ public:
 
     void paint(QPainter *painter, const QRect &repaintRegion) override;
 
-    QIcon closeIcon() { return m_closeIcon; };
-    QIcon minimizeIcon() { return m_minimizeIcon; };
-    QIcon maximizeIcon() { return m_maximizeIcon; };
-    QIcon restoreIcon() { return m_restoreIcon; };
+    QPixmap closeBtnPixmap() { return m_closeBtnPixmap; }
+    QPixmap maximizeBtnPixmap() { return m_maximizeBtnPixmap; }
+    QPixmap minimizeBtnPixmap() { return m_minimizeBtnPixmap; }
+    QPixmap restoreBtnPixmap() { return m_restoreBtnPixmap; }
+
+    bool darkMode() const;
 
 public slots:
     void init() override;
@@ -63,8 +65,10 @@ private:
     void updateButtonsGeometry();
     void updateShadow();
 
+    void updateBtnPixmap();
+    QPixmap fromSvgToPixmap(const QString &file, const QSize &size);
+
     int titleBarHeight() const;
-    bool darkMode() const;
 
     QColor titleBarBackgroundColor() const;
     QColor titleBarForegroundColor() const;
@@ -85,7 +89,7 @@ private:
     friend class MinimizeButton;
 
 private:
-    int m_titleBarHeight = 30;
+    int m_titleBarHeight = 35;
     int m_frameRadius = 5;
     QColor m_titleBarBgColor = QColor(255, 255, 255, 255);
     QColor m_titleBarFgColor = QColor(56, 56, 56, 255);
@@ -95,14 +99,14 @@ private:
     QColor m_titleBarFgDarkColor = QColor(202, 203, 206);
     QColor m_unfocusedFgDarkColor = QColor(112, 112, 112);
 
-    QIcon m_closeIcon;
-    QIcon m_minimizeIcon;
-    QIcon m_maximizeIcon;
-    QIcon m_restoreIcon;
-
     QSettings *m_settings;
     QString m_settingsFile;
     QFileSystemWatcher *m_fileWatcher;
+
+    QPixmap m_closeBtnPixmap;
+    QPixmap m_maximizeBtnPixmap;
+    QPixmap m_minimizeBtnPixmap;
+    QPixmap m_restoreBtnPixmap;
 };
 
 }

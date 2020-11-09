@@ -27,6 +27,7 @@
 #include <KDecoration2/DecorationShadow>
 
 // Qt
+#include <QApplication>
 #include <QPainter>
 #include <QSettings>
 #include <QSharedPointer>
@@ -56,11 +57,6 @@ Decoration::Decoration(QObject *parent, const QVariantList &args)
       m_fileWatcher(new QFileSystemWatcher)
 {
     ++g_sDecoCount;
-
-    m_closeIcon.addFile(":/images/close_normal.svg");
-    m_minimizeIcon.addFile(":/images/minimize_normal.svg");
-    m_maximizeIcon.addFile(":/images/maximize_normal.svg");
-    m_restoreIcon.addFile(":/images/restore_normal.svg");
 }
 
 Decoration::~Decoration()
@@ -142,6 +138,8 @@ void Decoration::init()
     // cyberos settings
     m_fileWatcher->addPath(m_settingsFile);
     connect(m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [=] {
+        updateBtnPixmap();
+
         update(titleBar());
         updateTitleBar();
         updateButtonsGeometry();
@@ -152,6 +150,7 @@ void Decoration::init()
             m_fileWatcher->addPath(m_settingsFile);
     });
 
+    updateBtnPixmap();
     createButtons();
 
     // // For some reason, the shadow should be installed the last. Otherwise,
@@ -219,10 +218,10 @@ void Decoration::updateButtonsGeometry()
     auto s = settings();
     auto c = client().toStrongRef().data();
     int right_margin = 5;
-    int button_spacing = 0;
+    int button_spacing = 10;
 
     foreach (const QPointer<KDecoration2::DecorationButton> &button, m_leftButtons->buttons() + m_rightButtons->buttons()) {
-        button.data()->setGeometry(QRectF(QPoint(0, 0), QSizeF(m_titleBarHeight, m_titleBarHeight)));
+        button.data()->setGeometry(QRectF(QPoint(0, 0), QSizeF(titleBarHeight(), titleBarHeight())));
     }
 
     if (!m_leftButtons->buttons().isEmpty()) {
@@ -319,9 +318,29 @@ void Decoration::updateShadow()
     setShadow(g_sShadow);
 }
 
+void Decoration::updateBtnPixmap()
+{
+    QString dirName = darkMode() ? "dark" : "light";
+
+    m_closeBtnPixmap = fromSvgToPixmap(QString(":/images/%1/close_normal.svg").arg(dirName), QSize(30, 30));
+    m_maximizeBtnPixmap = fromSvgToPixmap(QString(":/images/%1/maximize_normal.svg").arg(dirName), QSize(30, 30));
+    m_minimizeBtnPixmap = fromSvgToPixmap(QString(":/images/%1/minimize_normal.svg").arg(dirName), QSize(30, 30));
+    m_restoreBtnPixmap = fromSvgToPixmap(QString(":/images/%1/restore_normal.svg").arg(dirName), QSize(30, 30));
+}
+
+QPixmap Decoration::fromSvgToPixmap(const QString &file, const QSize &size)
+{
+    const qreal ratio = qApp->devicePixelRatio();
+    QPixmap pixmap(size * ratio);
+    pixmap.load(file);
+    pixmap.setDevicePixelRatio(ratio);
+    return pixmap;
+}
+
 int Decoration::titleBarHeight() const
 {
-    return m_titleBarHeight;
+    qreal ratio = qApp->devicePixelRatio();
+    return m_titleBarHeight * ratio;
 
     // const QFontMetrics fontMetrics(settings()->font());
     // const int baseUnit = settings()->gridUnit();
