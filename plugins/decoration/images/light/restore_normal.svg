@@ -284,41 +284,24 @@
        id="4" />
     <rect
        ry="4.4795979e-06"
-       y="291.74194"
+       y="290.91455"
        x="-5.3981786"
        height="4.2333331"
        width="4.2333331"
        id="rect1577-8"
-       style="opacity:0;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.12549739;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
+       style="opacity:0;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.125497;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill" />
     <g
        transform="matrix(0.26458333,0,0,0.26458333,9.6258987,2.2045947)"
        inkscape:label="#g3842"
        id="4-7" />
-    <rect
-       style="opacity:0;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.12549739;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-       id="rect1575-0"
-       width="4.2333331"
-       height="4.2333331"
-       x="-12.230613"
-       y="294.87387"
-       ry="4.4795979e-06" />
     <g
        transform="matrix(0.26458333,0,0,0.26458333,8.6603107,0.81148024)"
        inkscape:label="#g3842"
        id="4-75" />
-    <rect
-       style="opacity:0;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.12549739;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers stroke fill"
-       id="rect1579-4"
-       width="4.2333331"
-       height="4.2333331"
-       x="-13.125321"
-       y="293.40921"
-       ry="4.4795979e-06" />
     <path
-       style="color:#000000;dominant-baseline:auto;solid-color:#000000;fill:#8b8b8b;fill-opacity:1;stroke-width:0.410352;color-rendering:auto;image-rendering:auto;shape-rendering:auto"
-       inkscape:connector-curvature="0"
-       id="path1034"
-       d="m 3.9687499,291.25138 -2.0267535,1.77985 2.0267535,1.77985 2.0267536,-1.77985 z m 0,0.48335 1.4763344,1.29646 -1.4763344,1.2965 -1.4763344,-1.2965 z"
-       dominant-baseline="auto" />
+       fill="#303030"
+       d="M 5.2112887,291.78869 H 2.7262113 v -0.31063 h 2.795712 v 2.79571 H 5.2112887 Z m -2.795712,2.17445 v -1.24255 -0.62126 H 3.036846 4.2793848 4.9006542 v 0.62126 1.24255 0.62126 H 4.2793848 3.036846 2.4155767 Z m 0.3106346,0.31063 h 1.8638081 v -1.86381 H 2.7262113 Z"
+       id="path4"
+       style="fill:#383838;fill-opacity:1;fill-rule:evenodd;stroke-width:0.310634" />
   </g>
 </svg>
