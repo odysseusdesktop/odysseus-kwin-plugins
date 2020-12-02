@@ -127,6 +127,10 @@ void Decoration::init()
         update(titleBar());
     });
 
+    connect(c, &KDecoration2::DecoratedClient::activeChanged, this, [this] {
+        update(titleBar());
+    });
+
     connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
     connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
 
