@@ -1,22 +1,55 @@
-import QtQuick 2.0
-import QtQuick.Layouts 1.1
+import QtQuick 2.12
+import QtQuick.Window 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.components 2.0 as PlasmaComponents
 import org.kde.kquickcontrolsaddons 2.0
 import org.kde.kwin 2.0 as KWin
+
+import MeuiKit 1.0 as Meui
 
 // https://techbase.kde.org/Development/Tutorials/KWin/WindowSwitcher
 KWin.Switcher {
     id: tabBox
     currentIndex: thumbnailGridView.currentIndex
 
-    PlasmaCore.Dialog {
+    Window {
         id: dialog
-        location: PlasmaCore.Types.Floating
         visible: tabBox.visible
+        color: "transparent"
         flags: Qt.X11BypassWindowManagerHint
-        x: tabBox.screenGeometry.x + tabBox.screenGeometry.width * 0.5 - dialogMainItem.width * 0.5
-        y: tabBox.screenGeometry.y + tabBox.screenGeometry.height * 0.5 - dialogMainItem.height * 0.5
+
+        property int maxWidth: tabBox.screenGeometry.width * 0.9
+        property int maxHeight: tabBox.screenGeometry.height * 0.7
+        property int optimalWidth: thumbnailGridView.cellWidth * gridColumns
+        property int optimalHeight: thumbnailGridView.cellHeight * gridRows
+        property int maxGridColumnsByWidth: Math.floor(maxWidth / thumbnailGridView.cellWidth)
+        property int gridColumns: maxGridColumnsByWidth
+        property int gridRows: Math.ceil(thumbnailGridView.count / gridColumns)
+
+        width: Math.min(Math.max(thumbnailGridView.cellWidth, optimalWidth), maxWidth)
+        height: Math.min(Math.max(thumbnailGridView.cellHeight, optimalHeight), maxHeight)
+
+        x: (tabBox.screenGeometry.width - dialog.width) / 2
+        y: (tabBox.screenGeometry.height - dialog.height) / 2
+
+        Meui.WindowShadow {
+            view: dialog
+            geometry: Qt.rect(dialog.x, dialog.y, dialog.width, dialog.height)
+            radius: _background.radius
+        }
+
+        Rectangle {
+            id: _background
+            anchors.fill: parent
+            radius: Meui.Theme.bigRadius
+            color: Meui.Theme.backgroundColor
+            border.width: 1
+            border.color: Meui.Theme.disabledTextColor
+            opacity: 1
+        }
 
         onVisibleChanged: {
             if (visible) {
@@ -26,38 +59,30 @@ KWin.Switcher {
             }
         }
 
-        mainItem: Item {
+        Item {
             id: dialogMainItem
+            anchors.fill: parent
 
-            property int maxWidth: tabBox.screenGeometry.width * 0.9
-            property int maxHeight: tabBox.screenGeometry.height * 0.7
             property real screenFactor: tabBox.screenGeometry.width / tabBox.screenGeometry.height
-            property int maxGridColumnsByWidth: Math.floor(maxWidth / thumbnailGridView.cellWidth)
 
-            property int gridColumns: maxGridColumnsByWidth
-            property int gridRows: Math.ceil(thumbnailGridView.count / gridColumns)
-            property int optimalWidth: thumbnailGridView.cellWidth * gridColumns
-            property int optimalHeight: thumbnailGridView.cellHeight * gridRows
             property bool canStretchX: false
             property bool canStretchY: false
-            width: Math.min(Math.max(thumbnailGridView.cellWidth, optimalWidth), maxWidth)
-            height: Math.min(Math.max(thumbnailGridView.cellHeight, optimalHeight), maxHeight)
 
             clip: true
 
             // simple greedy algorithm
             function calculateColumnCount() {
                 // respect screenGeometry
-                var c = Math.min(thumbnailGridView.count, maxGridColumnsByWidth);
+                var c = Math.min(thumbnailGridView.count, dialog.maxGridColumnsByWidth);
 
                 var residue = thumbnailGridView.count % c;
                 if (residue == 0) {
-                    gridColumns = c;
+                    dialog.gridColumns = c;
                     return;
                 }
 
                 // start greedy recursion
-                gridColumns = columnCountRecursion(c, c, c - residue);
+                dialog.gridColumns = columnCountRecursion(c, c, c - residue);
             }
 
             // step for greedy algorithm
@@ -67,7 +92,7 @@ KWin.Switcher {
                 // don't increase vertical extent more than horizontal
                 // and don't exceed maxHeight
                 if (prevC * prevC <= thumbnailGridView.count + prevDiff ||
-                        maxHeight < Math.ceil(thumbnailGridView.count / c) * thumbnailGridView.cellHeight) {
+                        dialog.maxHeight < Math.ceil(thumbnailGridView.count / c) * thumbnailGridView.cellHeight) {
                     return prevBestC;
                 }
                 var residue = thumbnailGridView.count % c;
@@ -97,14 +122,6 @@ KWin.Switcher {
                 onPositionChanged: dialogMainItem.mouseEnabled = true
             }
 
-            // just to get the margin sizes
-            PlasmaCore.FrameSvgItem {
-                id: hoverItem
-                imagePath: "widgets/viewitem"
-                prefix: "hover"
-                visible: false
-            }
-
             GridView {
                 id: thumbnailGridView
                 model: tabBox.model
@@ -115,8 +132,8 @@ KWin.Switcher {
                 property int captionRowHeight: 22
                 property int thumbnailWidth: 300
                 property int thumbnailHeight: thumbnailWidth * (1.0/dialogMainItem.screenFactor)
-                cellWidth: hoverItem.margins.left + thumbnailWidth + hoverItem.margins.right
-                cellHeight: hoverItem.margins.top + captionRowHeight + thumbnailHeight + hoverItem.margins.bottom
+                cellWidth: thumbnailWidth
+                cellHeight: captionRowHeight + thumbnailHeight
                 height: cellHeight
 
                 // allow expansion on increasing count
@@ -129,6 +146,8 @@ KWin.Switcher {
                 }
 
                 delegate: Item {
+                    property bool isCurrent: thumbnailGridView.currentIndex === index
+
                     width: thumbnailGridView.cellWidth
                     height: thumbnailGridView.cellHeight
 
@@ -146,79 +165,47 @@ KWin.Switcher {
                         thumbnailGridView.currentIndexChanged(thumbnailGridView.currentIndex);
                     }
 
-                    Item {
-                        z: 0
+                    ColumnLayout {
                         anchors.fill: parent
-                        anchors.leftMargin: hoverItem.margins.left
-                        anchors.topMargin: hoverItem.margins.top
-                        anchors.rightMargin: hoverItem.margins.right
-                        anchors.bottomMargin: hoverItem.margins.bottom
+                        anchors.margins: Meui.Units.largeSpacing * 2
 
-                        RowLayout {
-                            id: captionRow
-                            anchors.left: parent.left
-                            anchors.top: parent.top
-                            anchors.right: parent.right
-                            height: thumbnailGridView.captionRowHeight
-                            spacing: 4
-
-                            QIconItem {
-                                id: iconItem
-                                // source: model.icon
-                                icon: model.icon
-                                width: parent.height
-                                height: parent.height
-                                state: index == thumbnailGridView.currentIndex ? QIconItem.ActiveState : QIconItem.DefaultState
-                            }
-
-                            PlasmaComponents.Label {
-                                text: model.caption
-                                height: parent.height
-                                // width: parent.width - captionRow.spacing - iconItem.width
-                                Layout.fillWidth: true
-                                elide: Text.ElideRight
-                            }
-
-                            PlasmaComponents.ToolButton {
-                                visible: model.closeable && typeof tabBox.model.close !== 'undefined' || false
-                                iconSource: 'window-close-symbolic'
-                                onClicked: {
-                                    tabBox.model.close(index)
-                                }
-                            }
+                        QIconItem {
+                            id: iconItem
+                            // source: model.icon
+                            icon: model.icon
+                            width: parent.height * 0.5
+                            height: parent.height * 0.5
+                            state: index == thumbnailGridView.currentIndex ? QIconItem.ActiveState : QIconItem.DefaultState
+                            Layout.alignment: Qt.AlignHCenter
                         }
 
-                        // Cannot draw icon on top of thumbnail.
-                        KWin.ThumbnailItem {
-                            wId: windowId
-                            // clip: true
-                            // clipTo: thumbnailGridView
-                            clip: true
-                            clipTo: parent
-                            anchors.fill: parent
-                            anchors.topMargin: captionRow.height
+                        Label {
+                            text: model.caption
+                            Layout.fillWidth: true
+                            elide: Text.ElideRight
+                            Layout.alignment: Qt.AlignHCenter
+                            color: isCurrent ? Meui.Theme.highlightedTextColor : Meui.Theme.textColor
                         }
                     }
                 } // GridView.delegate
 
-                highlight: PlasmaCore.FrameSvgItem {
+                highlight: Item {
                     id: highlightItem
-                    imagePath: "widgets/viewitem"
-                    prefix: "hover"
-                    anchors.fill: thumbnailGridView.currentItem
-                }
 
-                // property int selectedIndex: -1
-                Connections {
-                    target: tabBox
-                    onCurrentIndexChanged: {
-                        thumbnailGridView.currentIndex = tabBox.currentIndex
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.margins: Meui.Units.largeSpacing
+                        radius: Meui.Theme.bigRadius
+                        color: Meui.Theme.highlightColor
                     }
                 }
 
-                // keyNavigationEnabled: true // Requires: Qt 5.7 and QtQuick 2.? (2.7 didn't work).
-                // keyNavigationWraps: true // Requires: Qt 5.7 and QtQuick 2.? (2.7 didn't work).
-
+                Connections {
+                    target: tabBox
+                    function onCurrentIndexChanged() {
+                        thumbnailGridView.currentIndex = tabBox.currentIndex
+                    }
+                }
             } // GridView
 
             
