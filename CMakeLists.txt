@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(cyber-kwin-config)
+project(cyber-kwin-plugins)
 
 set(PROJECT_NAME "cyber-kwin")
 

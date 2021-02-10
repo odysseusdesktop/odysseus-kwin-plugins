@@ -1,12 +1,11 @@
-set(TARGET "panda-blur")
+set(TARGET "cybermagic")
+set(CMAKE_AUTOMOC ON)
 
 find_package(KF5Config REQUIRED)
 
 add_library(
     ${TARGET} MODULE
-    blur.cpp
-    blurshader.cpp
-    main.cpp
+    cybermagic.cpp
 )
 
 target_link_libraries(
@@ -18,6 +17,10 @@ target_link_libraries(
     KF5::CoreAddons
     KF5::WindowSystem
     KF5::ConfigCore
+)
+
+kcoreaddons_desktop_to_json(cybermagic cybermagic.desktop
+    SERVICE_TYPES kwineffect.desktop
 )
 
 install(TARGETS ${TARGET} DESTINATION "${QT_PLUGINS_DIR}/kwin/effects/plugins")

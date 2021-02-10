@@ -2,7 +2,7 @@
 blurEnabled=true
 
 [Effect-Blur]
-BlurStrength=5
+BlurStrength=8
 NoiseStrength=0
 
 [Windows]
