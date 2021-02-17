@@ -13,4 +13,5 @@ add_subdirectory(plugins)
 
 install(FILES config/kwinrc DESTINATION /etc/xdg)
 install(DIRECTORY scripts/cyberlauncher DESTINATION /usr/share/kwin/scripts)
+install(DIRECTORY scripts/cyber_squash DESTINATION /usr/share/kwin/effects)
 install(DIRECTORY tabbox/cyber_thumbnail DESTINATION /usr/share/kwin/tabbox)
