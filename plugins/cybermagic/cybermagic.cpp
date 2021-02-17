@@ -45,7 +45,7 @@ void CyberMagic::prePaintScreen(KWin::ScreenPrePaintData &data, int time)
     if (!m_animations.isEmpty())
         data.mask |= PAINT_SCREEN_WITH_TRANSFORMED_WINDOWS;
 
-    KWin::effects->prePaintScreen(data, time);
+    KWin::effects->prePaintScreen(data, std::chrono::milliseconds(time));
 }
 
 void CyberMagic::prePaintWindow(KWin::EffectWindow *w, KWin::WindowPrePaintData &data, int time)
@@ -55,7 +55,7 @@ void CyberMagic::prePaintWindow(KWin::EffectWindow *w, KWin::WindowPrePaintData 
         data.setTransformed();
     }
 
-    KWin::effects->prePaintWindow(w, data, time);
+    KWin::effects->prePaintWindow(w, data, std::chrono::milliseconds(time));
 }
 
 void CyberMagic::paintWindow(KWin::EffectWindow *w, int mask, QRegion region, KWin::WindowPaintData &data)

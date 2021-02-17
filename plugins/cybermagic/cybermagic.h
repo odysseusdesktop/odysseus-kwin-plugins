@@ -124,8 +124,8 @@ public:
     CyberMagic();
 
     void reconfigure(ReconfigureFlags) override;
-    void prePaintScreen(KWin::ScreenPrePaintData& data, int time) override;
-    void prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, int time) override;
+    void prePaintScreen(KWin::ScreenPrePaintData& data, int time);
+    void prePaintWindow(KWin::EffectWindow* w, KWin::WindowPrePaintData& data, int time);
     void paintWindow(KWin::EffectWindow* w, int mask, QRegion region, KWin::WindowPaintData& data) override;
     void postPaintScreen() override;
     bool isActive() const override;
