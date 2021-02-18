@@ -3,6 +3,7 @@ blurEnabled=true
 kwin4_effect_dialogparentEnabled=true
 kwin4_effect_fadeEnabled=true
 kwin4_effect_squashEnabled=false
+kwin4_effect_translucencyEnabled=false
 magiclampEnabled=false
 
 [Effect-Blur]
