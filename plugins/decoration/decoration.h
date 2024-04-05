@@ -28,7 +28,10 @@
 #include <QVariant>
 #include <QIcon>
 
-namespace Cyber
+// libodysseus-system
+#include <libodysseus.h>
+
+namespace Odysseus
 {
 
 class CloseButton;
@@ -91,9 +94,9 @@ private:
 private:
     int m_titleBarHeight = 35;
     int m_frameRadius = 6;
-    QColor m_titleBarBgColor = QColor(255, 255, 255, 255);
-    QColor m_titleBarFgColor = QColor(56, 56, 56, 255);
-    QColor m_unfocusedFgColor = QColor(127, 127, 127, 255);
+    QColor m_titleBarBgColor = LibOdysseus::getAccentColor();
+    QColor m_titleBarFgColor = QColor(255, 255, 255, 255);
+    QColor m_unfocusedFgColor = QColor(217, 217, 217, 255);
 
     QColor m_titleBarBgDarkColor = QColor(37, 37, 37);
     QColor m_titleBarFgDarkColor = QColor(202, 203, 206);

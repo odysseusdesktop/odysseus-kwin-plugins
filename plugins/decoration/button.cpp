@@ -61,7 +61,7 @@ void Button::paint(QPainter *painter, const QRect &repaintRegion)
 {
     Q_UNUSED(repaintRegion)
 
-    Cyber::Decoration *decoration = qobject_cast<Cyber::Decoration *>(this->decoration());
+    Odysseus::Decoration *decoration = qobject_cast<Odysseus::Decoration *>(this->decoration());
 
     if (!decoration)
         return;

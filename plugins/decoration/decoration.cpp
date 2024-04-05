@@ -38,11 +38,11 @@
 #include <cmath>
 
 K_PLUGIN_FACTORY_WITH_JSON(
-    CyberDecorationFactory,
-    "cyberos.json",
-    registerPlugin<Cyber::Decoration>(););
+    OdysseusDecorationFactory,
+    "odysseus.json",
+    registerPlugin<Odysseus::Decoration>(););
 
-namespace Cyber
+namespace Odysseus
 {
 static int g_sDecoCount = 0;
 static int g_shadowSize = 0;
@@ -52,7 +52,7 @@ static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
 
 Decoration::Decoration(QObject *parent, const QVariantList &args)
     : KDecoration2::Decoration(parent, args),
-      m_settings(new QSettings(QSettings::UserScope, "cyberos", "theme")),
+      m_settings(new QSettings(QSettings::UserScope, "odysseus", "theme")),
       m_settingsFile(m_settings->fileName()),
       m_fileWatcher(new QFileSystemWatcher)
 {
@@ -82,11 +82,12 @@ void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
         painter->setPen(Qt::NoPen);
         painter->setBrush(titleBarBackgroundColor());
 
-        if (s->isAlphaChannelSupported() && radiusAvailable()) {
+        /*if (s->isAlphaChannelSupported() && radiusAvailable()) {
             painter->drawRoundedRect(rect(), m_frameRadius, m_frameRadius);
         } else {
             painter->drawRect(rect());
-        }
+        }*/
+        painter->drawRect(rect());
         painter->restore();
 
         // draw buttons.
@@ -139,7 +140,7 @@ void Decoration::init()
     connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
     connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
-    // cyberos settings
+    // Odysseus settings
     m_fileWatcher->addPath(m_settingsFile);
     connect(m_fileWatcher, &QFileSystemWatcher::fileChanged, this, [=] {
         updateBtnPixmap();
@@ -180,9 +181,9 @@ void Decoration::recalculateBorders()
     QMargins borders;
 
     if (!isMaximized()) {
-        borders.setLeft(m_frameRadius / 2);
-        borders.setRight(m_frameRadius / 2);
-        borders.setBottom(m_frameRadius / 2);
+        borders.setLeft(m_frameRadius);
+        borders.setRight(m_frameRadius);
+        borders.setBottom(m_frameRadius);
     }
 
     borders.setTop(titleBarHeight());
@@ -221,7 +222,7 @@ void Decoration::updateButtonsGeometry()
 
     auto s = settings();
     auto c = client().toStrongRef().data();
-    int right_margin = 5;
+    int right_margin = 3;
     int button_spacing = 10;
 
     foreach (const QPointer<KDecoration2::DecorationButton> &button, m_leftButtons->buttons() + m_rightButtons->buttons()) {
@@ -353,7 +354,7 @@ int Decoration::titleBarHeight() const
 
 bool Decoration::darkMode() const
 {
-    QSettings settings(QSettings::UserScope, "cyberos", "theme");
+    QSettings settings(QSettings::UserScope, "odysseus", "theme");
     return settings.value("DarkMode", false).toBool();
 }
 
@@ -482,6 +483,6 @@ void Decoration::paintButtons(QPainter *painter, const QRect &repaintRegion) con
     m_rightButtons->paint(painter, repaintRegion);
 }
 
-} // namespace Cyber
+} // namespace Odysseus
 
 #include "decoration.moc"

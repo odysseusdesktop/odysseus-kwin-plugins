@@ -2,7 +2,6 @@ find_package(Qt5 CONFIG REQUIRED COMPONENTS Core Gui)
 find_package(KF5CoreAddons REQUIRED)
 find_package(KF5WindowSystem REQUIRED)
 
-# 获取qmake
 get_target_property(QT_QMAKE_EXECUTABLE ${Qt5Core_QMAKE_EXECUTABLE} IMPORTED_LOCATION)
 if(NOT QT_QMAKE_EXECUTABLE)
     message(FATAL_ERROR "qmake is not found.")

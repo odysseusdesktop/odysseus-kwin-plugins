@@ -2,8 +2,8 @@
     "KPlugin": {
         "Description": "Window decoration",
         "EnabledByDefault": true,
-        "Id": "org.cyber.decoration",
-        "Name": "Cyber Window Frame",
+        "Id": "org.odysseus.decoration",
+        "Name": "Odysseus Window Frame",
         "ServiceTypes": [
             "org.kde.kdecoration2"
         ]
